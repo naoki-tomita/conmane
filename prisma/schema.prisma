@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id String @id
+  loginId String @unique
+  password String
+  models Model[]
+  entities Entity[]
+  sessions Session[]
+}
+
+model Session {
+  id String @id
+  expiresAt Int
+  userId String
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Model {
+  id String @id
+  ownerId String
+  owner User @relation(fields: [ownerId], references: [id])
+  structure String
+}
+
+model Entity {
+  id String @id
+  ownerId String
+  owner User @relation(fields: [ownerId], references: [id])
+  content String
+}
