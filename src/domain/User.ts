@@ -15,8 +15,12 @@ export class Password {
 }
 
 export class User {
-  constructor(readonly id: UUID, readonly userId: LoginId, readonly password: Password) {}
-  verifyPassword(password: Password) {
+  constructor(
+    readonly id: UUID,
+    readonly userId: LoginId,
+    readonly password: Password
+  ) {}
+  verifyPassword(password: Password): boolean {
     return password.value === this.password.value;
   }
 }

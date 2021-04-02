@@ -8,6 +8,7 @@ const Login: NextPage = () => {
   const [password, setPassword] = useState("");
   async function login() {
     await Api.users.login(id, password);
+    location.assign("/");
   }
 
   return (
@@ -17,6 +18,6 @@ const Login: NextPage = () => {
       <Submit label="create" onClick={login} />
     </Form>
   );
-}
+};
 
 export default Login;

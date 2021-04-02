@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`login initial state should match with snapshot 1`] = `
+<form
+  style={
+    Object {
+      "alignItems": "center",
+      "display": "flex",
+      "flexDirection": "column",
+      "margin": "auto",
+      "width": 420,
+    }
+  }
+>
+  <div
+    style={
+      Object {
+        "width": "100%",
+      }
+    }
+  >
+    <label>
+      id
+      :
+    </label>
+    <input
+      onChange={[Function]}
+      value=""
+    />
+  </div>
+  <div
+    style={
+      Object {
+        "width": "100%",
+      }
+    }
+  >
+    <label>
+      password
+      :
+    </label>
+    <input
+      onChange={[Function]}
+      value=""
+    />
+  </div>
+  <button
+    onClick={[Function]}
+    style={
+      Object {
+        "width": 120,
+      }
+    }
+  >
+    create
+  </button>
+</form>
+`;

@@ -7,7 +7,7 @@ import { UserUseCase } from "./usecase/UserUseCase";
 export class App {
   container: {
     userUseCase: UserUseCase;
-  }
+  };
   constructor() {
     const client = new PrismaClient();
     register(client).as(PrismaClient);

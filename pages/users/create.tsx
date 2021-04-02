@@ -10,17 +10,21 @@ const Login: NextPage = () => {
 
   async function create() {
     await Api.users.create(id, password);
-    // location.assign("/");
+    location.assign("/");
   }
 
   return (
     <Form>
       <Input label="id" onChange={setId} value={id} />
       <Input label="password" onChange={setPassword} value={password} />
-      <Input label="double check password" onChange={setDoubleCheckPassword} value={doubleCheckPassword} />
+      <Input
+        label="double check password"
+        onChange={setDoubleCheckPassword}
+        value={doubleCheckPassword}
+      />
       <Submit label="create" onClick={create} />
     </Form>
   );
-}
+};
 
 export default Login;

@@ -14,18 +14,24 @@ const login: NextApiHandler = async (req, res) => {
   } catch (e) {
     return res.status(500).json({ error: e.toString() });
   }
-}
+};
 
 const post: NextApiHandler = async (req, res) => {
   const { loginId, password } = req.body;
-  const session = await app.container.userUseCase.login(new LoginId(loginId), Password.from(password));
+  const session = await app.container.userUseCase.login(
+    new LoginId(loginId),
+    Password.from(password)
+  );
   res.writeHead(200, { ...toSetCookieHeader(session) }).end(JSON.stringify({}));
-}
-
+};
 
 const CookieName = "SESSION";
 function toSetCookieHeader(session: Session) {
-  return { "set-cookie": `${CookieName}=${session.id.value};Expires=${session.expiresAt.toDate().toUTCString()};Path=/` }
+  return {
+    "set-cookie": `${CookieName}=${
+      session.id.value
+    };Expires=${session.expiresAt.toDate().toUTCString()};Path=/`,
+  };
 }
 
 export default login;

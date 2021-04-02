@@ -1,6 +1,5 @@
 import { mock } from "@kojiro.ueda/bandia";
 import { register } from "automated-omusubi";
-import { UUID } from "../../domain/Id";
 import { Duration, Period, Session } from "../../domain/Session";
 import { Password, LoginId, User } from "../../domain/User";
 import { SessionPort } from "../../port/SessionPort";
@@ -33,11 +32,11 @@ describe("UserUseCase", () => {
       const user = mock<User>();
       const session = mock<Session>();
       const periodSpy = jest.spyOn(Period, "fromNow");
-      const period = mock<Period>()
+      const period = mock<Period>();
 
       const userPort = mock<UserPort>();
       register(userPort).as(UserPort);
-      userPort.findBy.mockResolvedValueOnce(user);
+      userPort.findById.mockResolvedValueOnce(user);
 
       const sessionPort = mock<SessionPort>();
       register(sessionPort).as(SessionPort);
@@ -51,7 +50,7 @@ describe("UserUseCase", () => {
       const actual = await target.login(id, password);
 
       expect(actual).toBe(session);
-      expect(userPort.findBy).toBeCalledWith(id);
+      expect(userPort.findById).toBeCalledWith(id);
       expect(user.verifyPassword).toBeCalledWith(password);
       expect(periodSpy).toBeCalledWith(new Duration(3600000));
       expect(sessionPort.create).toBeCalledWith(user, period);
@@ -64,10 +63,9 @@ describe("UserUseCase", () => {
       const user = mock<User>();
       const session = mock<Session>();
 
-
       const userPort = mock<UserPort>();
       register(userPort).as(UserPort);
-      userPort.findBy.mockResolvedValueOnce(user);
+      userPort.findById.mockResolvedValueOnce(user);
 
       const sessionPort = mock<SessionPort>();
       register(sessionPort).as(SessionPort);
@@ -78,9 +76,9 @@ describe("UserUseCase", () => {
       const target = new UserUseCase();
       await expect(target.login(id, password)).rejects.toBeInstanceOf(Error);
 
-      expect(userPort.findBy).toBeCalledWith(id);
+      expect(userPort.findById).toBeCalledWith(id);
       expect(user.verifyPassword).toBeCalledWith(password);
       expect(sessionPort.create).not.toBeCalled();
-    })
+    });
   });
 });

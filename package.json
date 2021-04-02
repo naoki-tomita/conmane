@@ -4,35 +4,50 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@kojiro.ueda/bandia": "^0.0.1",
     "@prisma/client": "2.20.0",
-    "@types/jest": "^26.0.22",
-    "@types/react": "^17.0.3",
-    "@types/react-dom": "^17.0.3",
-    "@types/uuid": "^8.3.0",
     "automated-omusubi": "^0.0.8",
-    "babel-plugin-transform-typescript-metadata": "^0.3.2",
-    "jest": "^26.6.3",
     "next": "^10.1.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "ts-jest": "^26.5.4",
-    "typescript": "^4.2.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-proposal-decorators": "^7.13.5",
-    "prisma": "2.20.0"
+    "@kojiro.ueda/bandia": "^0.0.1",
+    "@types/jest": "^26.0.22",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.3",
+    "@types/react-test-renderer": "^17.0.1",
+    "@types/uuid": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
+    "babel-plugin-transform-typescript-metadata": "^0.3.2",
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-unused-imports": "^1.1.1",
+    "jest": "^26.6.3",
+    "prettier": "^2.2.1",
+    "prisma": "2.20.0",
+    "react-test-renderer": "^17.0.2",
+    "ts-jest": "^26.5.4",
+    "typescript": "^4.2.3"
   },
   "scripts": {
     "dev": "next dev",
     "test": "jest",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "prettier \"**/*.{ts,tsx}\" -w && eslint \"**/*.{ts,tsx}\" --fix"
   },
   "jest": {
-    "preset": "ts-jest"
+    "preset": "ts-jest",
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "tsconfig.test.json"
+      }
+    }
   },
   "babel": {
     "presets": [
