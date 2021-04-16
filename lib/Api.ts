@@ -33,7 +33,7 @@ export const Api = {
   },
 };
 
-/* eslint @typescript-eslint/no-explicit-any: 0 */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function throwError(e: string): any {
   throw Error(e);
 }

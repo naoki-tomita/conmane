@@ -1,10 +1,10 @@
 import { create, act } from "react-test-renderer";
-import Login from "../../../pages/users/login";
+import Create from "../../../pages/users/create";
 
-describe("login", () => {
+describe("create user", () => {
   describe("initial state", () => {
     it("should match with snapshot", () => {
-      const renderer = create(<Login />);
+      const renderer = create(<Create />);
       expect(renderer).toMatchSnapshot();
     });
   });
@@ -15,14 +15,17 @@ describe("login", () => {
     it.todo("should loginable when id password filled.");
   });
 
-  describe("exec login", () => {
-    it("should execute login", async () => {
-      const renderer = create(<Login />);
+  describe("exec create user", () => {
+    it("should execute create user", async () => {
+      const renderer = create(<Create />);
       const idInput = renderer.root
         .find((it) => it.props.label === "id")
         .find((it) => it.type === "input");
       const passwordInput = renderer.root
         .find((it) => it.props.label === "password")
+        .find((it) => it.type === "input");
+      const doubleCheckPasswordInput = renderer.root
+        .find((it) => it.props.label === "double check password")
         .find((it) => it.type === "input");
       const submit = renderer.root.find((it) => it.type === "button");
       global.fetch = (jest.fn(async () => ({
@@ -32,10 +35,11 @@ describe("login", () => {
       act(() => {
         idInput.props.onChange({ target: { value: "foo" } });
         passwordInput.props.onChange({ target: { value: "bar" } });
+        doubleCheckPasswordInput.props.onChange({ target: { value: "bar" } });
       });
       await act(() => submit.props.onClick());
       expect(global.fetch).toBeCalledWith(
-        `http://localhost/api/v1/users/login`,
+        `http://localhost/api/v1/users/create`,
         {
           method: "POST",
           headers: { "content-type": "application/json" },

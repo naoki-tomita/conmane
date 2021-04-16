@@ -1,8 +1,12 @@
+import { css } from "@emotion/react";
 import { ReactNode, VFC } from "react";
 
 export const Form: VFC<{ children: ReactNode }> = ({ children }) => {
   return (
     <form
+      css={css`
+        display: flex;
+      `}
       style={{
         display: "flex",
         flexDirection: "column",
