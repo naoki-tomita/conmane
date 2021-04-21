@@ -2,6 +2,7 @@
 
 exports[`login initial state should match with snapshot 1`] = `
 <form
+  className="css-1nu3mtp-Form"
   style={
     Object {
       "alignItems": "center",
