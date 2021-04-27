@@ -5,7 +5,7 @@ import { LoginId, Password } from "../../../../src/domain/User";
 
 const create: NextApiHandler = async (req, res) => {
   try {
-    switch (req.method.toUpperCase()) {
+    switch (req?.method?.toUpperCase()) {
       case "POST":
         return post(req, res);
       default:
@@ -18,11 +18,11 @@ const create: NextApiHandler = async (req, res) => {
 
 const post: NextApiHandler = async (req, res) => {
   const { loginId, password } = req.body;
-  const user = await app.container.userUseCase.create(
+  const user = await app.get("userUseCase").create(
     new LoginId(loginId),
     Password.from(password)
   );
-  const session = await app.container.userUseCase.login(
+  const session = await app.get("userUseCase").login(
     user.userId,
     user.password
   );

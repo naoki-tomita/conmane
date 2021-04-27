@@ -1,11 +1,11 @@
 import { NextApiHandler } from "next";
 import { app } from "../../../../src";
-import { Session } from "../../../../src/domain/Session";
-import { LoginId, Password } from "../../../../src/domain/User";
+import { UUID } from "../../../../src/domain/Id";
+import { User } from "../../../../src/domain/User";
 
-const login: NextApiHandler = async (req, res) => {
+const me: NextApiHandler = async (req, res) => {
   try {
-    switch (req.method.toUpperCase()) {
+    switch (req?.method?.toUpperCase()) {
       case "GET":
         return get(req, res);
       default:
@@ -17,21 +17,16 @@ const login: NextApiHandler = async (req, res) => {
 };
 
 const get: NextApiHandler = async (req, res) => {
-  const { loginId, password } = req.body;
-  const session = await app.container.userUseCase.login(
-    new LoginId(loginId),
-    Password.from(password)
-  );
-  res.writeHead(200, { ...toSetCookieHeader(session) }).end(JSON.stringify({}));
+  const session = req.cookies.SESSION;
+  if (session == null) {
+    return res.writeHead(400).end("{}");
+  }
+  const user = await app.get("sessionUseCase").verifySession(new UUID(session));
+  res.json(JSON.stringify(toEntity(user)));
 };
 
-const CookieName = "SESSION";
-function toSetCookieHeader(session: Session) {
-  return {
-    "set-cookie": `${CookieName}=${
-      session.id.value
-    };Expires=${session.expiresAt.toDate().toUTCString()};Path=/`,
-  };
+function toEntity(user: User) {
+  return { id: user.id.value, loginId: user.userId.value };
 }
 
-export default login;
+export default me;

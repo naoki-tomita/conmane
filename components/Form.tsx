@@ -3,18 +3,7 @@ import { ReactNode, VFC } from "react";
 
 export const Form: VFC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <form
-      css={css`
-        display: flex;
-      `}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        width: 420,
-        margin: "auto",
-      }}
-    >
+    <form>
       {children}
     </form>
   );
@@ -43,7 +32,7 @@ export const Submit: VFC<{
   label: string;
 }> = ({ onClick, label }) => {
   return (
-    <button style={{ width: 120 }} onClick={onClick}>
+    <button style={{ width: 120 }} onClick={e => (e.preventDefault(), onClick())}>
       {label}
     </button>
   );

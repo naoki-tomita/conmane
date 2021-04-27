@@ -37,7 +37,7 @@ describe("create user", () => {
         passwordInput.props.onChange({ target: { value: "bar" } });
         doubleCheckPasswordInput.props.onChange({ target: { value: "bar" } });
       });
-      await act(() => submit.props.onClick());
+      await act(() => submit.props.onClick({ preventDefault() {} }));
       expect(global.fetch).toBeCalledWith(
         `http://localhost/api/v1/users/create`,
         {

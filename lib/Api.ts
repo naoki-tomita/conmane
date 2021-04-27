@@ -12,6 +12,15 @@ function request(
 type EmptyObject = Record<string, never>;
 
 export const Api = {
+  withCookie(cookie?: string) {
+    return {
+      users: {
+        me(): Promise<{ id: string; loginId: string; }> {
+          return request(`${Host}/api/v1/users/me`, { headers: cookie ? { cookie }: undefined});
+        },
+      }
+    };
+  },
   users: {
     create(userId: string, password: string): Promise<EmptyObject> {
       return request(`${Host}/api/v1/users/create`, {
@@ -26,9 +35,6 @@ export const Api = {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ loginId: userId, password }),
       });
-    },
-    me(): Promise<EmptyObject> {
-      return request(`${Host}/api/v1/users/me`);
     },
   },
 };

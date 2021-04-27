@@ -24,8 +24,8 @@ export class SessionGateway implements SessionPort {
 
   async findBy(id: UUID): Promise<Session> {
     const session = await this.prisma.session.findFirst({
-      where: { id: id.value },
+      where: { id: id.value ?? "" },
     });
-    return new Session(id, new Period(session.expiresAt));
+    return new Session(id, new Period(session!.expiresAt));
   }
 }
