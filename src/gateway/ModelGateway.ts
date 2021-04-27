@@ -18,7 +18,7 @@ export class ModelGateway implements ModelPort {
 
   async save(owner: User, structure: ModelStructure): Promise<Model> {
     const id = UUID.generate();
-    this.prisma.model.create({
+    await this.prisma.model.create({
       data: {
         id: id.value,
         ownerId: owner.id.value,

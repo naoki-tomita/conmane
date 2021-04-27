@@ -13,11 +13,24 @@ type EmptyObject = Record<string, never>;
 
 export const Api = {
   withCookie(cookie?: string) {
+    const headers: { cookie: string } | {} = cookie ? { cookie } : {};
     return {
       users: {
         me(): Promise<{ id: string; loginId: string; }> {
-          return request(`${Host}/api/v1/users/me`, { headers: cookie ? { cookie }: undefined});
+          return request(`${Host}/api/v1/users/me`, { headers });
         },
+      },
+      models: {
+        list(): Promise<{ models: Array<{ id: string; structure: string }> }> {
+          return request(`${Host}/api/v1/models`, { headers });
+        },
+        create(structure: any) {
+          return request(`${Host}/api/v1/models`, {
+            method: "POST",
+            headers: { ...headers, "content-type": "application/json" },
+            body: JSON.stringify({ structure })
+          })
+        }
       }
     };
   },
