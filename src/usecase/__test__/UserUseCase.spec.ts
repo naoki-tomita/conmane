@@ -1,5 +1,6 @@
 import { mock } from "@kojiro.ueda/bandia";
 import { register } from "automated-omusubi";
+import { when } from "jest-when";
 import { Duration, Period, Session } from "../../domain/Session";
 import { Password, LoginId, User } from "../../domain/User";
 import { SessionPort } from "../../port/SessionPort";
@@ -15,13 +16,12 @@ describe("UserUseCase", () => {
 
       const userPort = mock<UserPort>();
       register(userPort).as(UserPort);
-      userPort.create.mockResolvedValueOnce(user);
+
+      when(userPort.create).calledWith(id, password).mockResolvedValueOnce(user);
 
       const target = new UserUseCase();
-      const actual = await target.create(id, password);
 
-      expect(actual).toBe(user);
-      expect(userPort.create).toBeCalledWith(id, password);
+      await expect(target.create(id, password)).resolves.toBe(user);
     });
   });
 
@@ -35,25 +35,18 @@ describe("UserUseCase", () => {
       const period = mock<Period>();
 
       const userPort = mock<UserPort>();
-      register(userPort).as(UserPort);
-      userPort.findById.mockResolvedValueOnce(user);
-
       const sessionPort = mock<SessionPort>();
       register(sessionPort).as(SessionPort);
-      sessionPort.create.mockResolvedValueOnce(session);
+      register(userPort).as(UserPort);
 
-      user.verifyPassword.mockReturnValueOnce(true);
-
-      periodSpy.mockReturnValueOnce(period);
+      when(userPort.findById).calledWith(id).mockResolvedValueOnce(user);
+      when(sessionPort.create).calledWith(user, period).mockResolvedValueOnce(session);
+      when(user.verifyPassword).calledWith(password).mockReturnValueOnce(true);
+      when(periodSpy).calledWith(new Duration(36000000)).mockReturnValueOnce(period);
 
       const target = new UserUseCase();
-      const actual = await target.login(id, password);
 
-      expect(actual).toBe(session);
-      expect(userPort.findById).toBeCalledWith(id);
-      expect(user.verifyPassword).toBeCalledWith(password);
-      expect(periodSpy).toBeCalledWith(new Duration(3600000));
-      expect(sessionPort.create).toBeCalledWith(user, period);
+      await expect(target.login(id, password)).resolves.toBe(session);
       periodSpy.mockRestore();
     });
 
@@ -64,20 +57,16 @@ describe("UserUseCase", () => {
       const session = mock<Session>();
 
       const userPort = mock<UserPort>();
-      register(userPort).as(UserPort);
-      userPort.findById.mockResolvedValueOnce(user);
-
       const sessionPort = mock<SessionPort>();
+      register(userPort).as(UserPort);
       register(sessionPort).as(SessionPort);
-      sessionPort.create.mockResolvedValueOnce(session);
 
-      user.verifyPassword.mockReturnValueOnce(false);
+      when(userPort.findById).calledWith(id).mockResolvedValueOnce(user);
+      when(user.verifyPassword).calledWith(password).mockReturnValueOnce(false);
 
       const target = new UserUseCase();
-      await expect(target.login(id, password)).rejects.toBeInstanceOf(Error);
 
-      expect(userPort.findById).toBeCalledWith(id);
-      expect(user.verifyPassword).toBeCalledWith(password);
+      await expect(target.login(id, password)).rejects.toBeInstanceOf(Error);
       expect(sessionPort.create).not.toBeCalled();
     });
   });
