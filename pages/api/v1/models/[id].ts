@@ -1,7 +1,7 @@
 import { NextApiHandler } from "next";
 import { app } from "../../../../src";
 import { UUID } from "../../../../src/domain/Id";
-import { Model, Models, ModelStructure } from "../../../../src/domain/Model";
+import { Model, Models, ModelStructure, Name } from "../../../../src/domain/Model";
 
 const model: NextApiHandler = async (req, res) => {
   try {
@@ -21,24 +21,43 @@ const model: NextApiHandler = async (req, res) => {
 const get: NextApiHandler = async (req, res) => {
   const session = req.cookies.SESSION;
   const { id } = req.query;
-  const owner = await app.get("sessionUseCase").verifySession(new UUID(session));
-  const model = await app.get("modelUseCase").get(owner, new UUID(id as string));
+  const owner = await app
+    .get("sessionUseCase")
+    .verifySession(new UUID(session));
+  const model = await app
+    .get("modelUseCase")
+    .getOne(owner, new UUID(id as string));
   res.json(toEntity(model));
-}
+};
 
-function toEntities(models: Models) {
-  return { models: models.map(toEntity) };
-}
-function toEntity(model: Model) {
-  return { id: model.id.value, structure: JSON.parse(model.structure.value) }
+function toEntity(
+  model: Model
+) {
+  return {
+    id: model.id.value,
+    name: model.name.value,
+    structure: JSON.parse(model.structure.value)
+  };
 }
 
 const put: NextApiHandler = async (req, res) => {
   const session = req.cookies.SESSION;
-  const { structure } = req.body;
-  const owner = await app.get("sessionUseCase").verifySession(new UUID(session));
-  const model = await app.get("modelUseCase").update(owner, new ModelStructure(JSON.stringify(structure)));
+  const { name, structure } = req.body;
+  const { id } = req.query;
+  const owner = await app
+    .get("sessionUseCase")
+    .verifySession(new UUID(session));
+  const model = await app
+    .get("modelUseCase")
+    .update(
+      owner,
+      new Model(
+        new UUID(id as string),
+        new Name(name),
+        new ModelStructure(JSON.stringify(structure))
+      )
+    );
   res.json(toEntity(model));
-}
+};
 
 export default model;

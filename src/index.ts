@@ -23,7 +23,7 @@ export class App {
     this.container = {
       userUseCase: get(UserUseCase),
       sessionUseCase: get(SessionUseCase),
-      modelUseCase: get(ModelUseCase)
+      modelUseCase: get(ModelUseCase),
     };
   }
 }

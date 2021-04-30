@@ -26,6 +26,9 @@ export class UserGateway implements UserPort {
     const entity = await this.prisma.user.findFirst({
       where: { loginId: loginId.value },
     });
+    if (!entity) {
+      throw Error("not found");
+    }
     return new User(
       new UUID(entity.id),
       new LoginId(entity.loginId),
@@ -34,14 +37,17 @@ export class UserGateway implements UserPort {
   }
 
   async findBySession(session: Session): Promise<User> {
-    const { user } = await this.prisma.session.findFirst({
+    const foundSession = await this.prisma.session.findFirst({
       where: { id: session.id.value },
       include: { user: true },
     });
+    if (!foundSession) {
+      throw Error("not found");
+    }
     return new User(
-      new UUID(user.id),
-      new LoginId(user.loginId),
-      Password.of(user.password)
+      new UUID(foundSession.user.id),
+      new LoginId(foundSession.user.loginId),
+      Password.of(foundSession.user.password)
     );
   }
 }

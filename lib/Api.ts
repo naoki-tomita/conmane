@@ -11,27 +11,43 @@ function request(
 
 type EmptyObject = Record<string, never>;
 
+interface Model {
+  id: string;
+  name: string;
+  structure: any;
+}
+
 export const Api = {
   withCookie(cookie?: string) {
     const headers: { cookie: string } | {} = cookie ? { cookie } : {};
     return {
       users: {
-        me(): Promise<{ id: string; loginId: string; }> {
+        me(): Promise<{ id: string; loginId: string }> {
           return request(`${Host}/api/v1/users/me`, { headers });
         },
       },
       models: {
-        list(): Promise<{ models: Array<{ id: string; structure: string }> }> {
+        list(): Promise<{ models: Model[] }> {
           return request(`${Host}/api/v1/models`, { headers });
         },
-        create(structure: any) {
+        create(name: string, structure: any): Promise<Model> {
           return request(`${Host}/api/v1/models`, {
             method: "POST",
             headers: { ...headers, "content-type": "application/json" },
-            body: JSON.stringify({ structure })
-          })
-        }
-      }
+            body: JSON.stringify({ name, structure }),
+          });
+        },
+        get(id: string): Promise<Model> {
+          return request(`${Host}/api/v1/models/${id}`, { headers });
+        },
+        save(id: string, name: string, structure: any): Promise<Model> {
+          return request(`${Host}/api/v1/models/${id}`, {
+            method: "PUT",
+            headers: { ...headers, "content-type": "application/json" },
+            body: JSON.stringify({ name, structure }),
+          });
+        },
+      },
     };
   },
   users: {

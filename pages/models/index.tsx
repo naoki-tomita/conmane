@@ -1,22 +1,38 @@
 import Link from "next/link";
 import { NextPage } from "next";
 import { Api } from "../../lib/Api";
+import { useRouter } from "next/router";
 
 interface Model {
   id: string;
-  structure: any;
+  name: string;
+  structure: Array<Record<string, unknown>>;
 }
 
 const Models: NextPage<{ models: Model[] }> = ({ models }) => {
+  const router = useRouter();
+  async function onCreateClick() {
+    const { id } = await Api.withCookie().models.create("", [
+      { type: "text", name: "" },
+    ]);
+    router.push(`/models/${id}`);
+  }
   return (
     <>
-    <Link href="/models/create"><a>create</a></Link>
-    <ul>
-      {models.map(it => <li key={it.id}>{it.id}:<pre>{JSON.stringify(it.structure)}</pre></li>)}
-    </ul>
+      <button onClick={onCreateClick}>create</button>
+      <ul>
+        {models.map((it) => (
+          <li key={it.id}>
+            <Link href={`/models/${it.id}`}>
+              <a>{it.name || "no name"}</a>
+            </Link>
+            :<pre>{JSON.stringify(it.structure)}</pre>
+          </li>
+        ))}
+      </ul>
     </>
   );
-}
+};
 
 Models.getInitialProps = ({ req }) => {
   return Api.withCookie(req?.headers.cookie).models.list();

@@ -18,10 +18,9 @@ const login: NextApiHandler = async (req, res) => {
 
 const post: NextApiHandler = async (req, res) => {
   const { loginId, password } = req.body;
-  const session = await app.get("userUseCase").login(
-    new LoginId(loginId),
-    Password.from(password)
-  );
+  const session = await app
+    .get("userUseCase")
+    .login(new LoginId(loginId), Password.from(password));
   res.writeHead(200, { ...toSetCookieHeader(session) }).end(JSON.stringify({}));
 };
 

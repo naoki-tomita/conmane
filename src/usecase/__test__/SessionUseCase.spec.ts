@@ -20,7 +20,9 @@ describe("SessionUseCase", () => {
       register(userPort).as(UserPort);
 
       when(sessionPort.findBy).calledWith(uuid).mockResolvedValueOnce(session);
-      when(userPort.findBySession).calledWith(session).mockResolvedValueOnce(user);
+      when(userPort.findBySession)
+        .calledWith(session)
+        .mockResolvedValueOnce(user);
 
       const target = new SessionUseCase();
       const actual = await target.verifySession(uuid);

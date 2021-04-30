@@ -18,14 +18,12 @@ const create: NextApiHandler = async (req, res) => {
 
 const post: NextApiHandler = async (req, res) => {
   const { loginId, password } = req.body;
-  const user = await app.get("userUseCase").create(
-    new LoginId(loginId),
-    Password.from(password)
-  );
-  const session = await app.get("userUseCase").login(
-    user.userId,
-    user.password
-  );
+  const user = await app
+    .get("userUseCase")
+    .create(new LoginId(loginId), Password.from(password));
+  const session = await app
+    .get("userUseCase")
+    .login(user.userId, user.password);
   res.writeHead(200, { ...toSetCookieHeader(session) }).end(JSON.stringify({}));
 };
 

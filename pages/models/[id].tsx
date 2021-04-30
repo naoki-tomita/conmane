@@ -20,10 +20,10 @@ interface SelectField extends BaseField {
 
 type Field = TextField | SelectField;
 
-function createInitialField(type: FieldType, name: string = ""): Field {
+function createInitialField(type: FieldType, name = ""): Field {
   switch (type) {
     case "select":
-      return { type, name, options: [] };
+      return { type, name, options: [""] };
     case "text":
     default:
       return { type, name };
@@ -36,21 +36,26 @@ function useFields(initialFields: Field[] = []) {
   return {
     fields,
     add() {
-      setFields(fields => [...fields, createInitialField("text")])
+      setFields((fields) => [...fields, createInitialField("text")]);
     },
     changeType(index: number, type: FieldType) {
-      setFields(fields => fields.map((field, i) => i === index ? createInitialField(type, field.name) : field))
+      setFields((fields) =>
+        fields.map((field, i) =>
+          i === index ? createInitialField(type, field.name) : field
+        )
+      );
     },
     setProps(index: number, props: Field) {
-      setFields(fields => fields.map((field, i) =>
-        i === index
-          ? { ...props, type: field.type } as Field
-          : field));
+      setFields((fields) =>
+        fields.map((field, i) =>
+          i === index ? ({ ...props, type: field.type } as Field) : field
+        )
+      );
     },
     remove(index: number) {
-      setFields(fields => fields.filter((_, i) => i !== index));
-    }
-  }
+      setFields((fields) => fields.filter((_, i) => i !== index));
+    },
+  };
 }
 
 const Types = ["text", "select"] as const;
@@ -59,11 +64,18 @@ const FieldTypeSelector: VFC<{
   onTypeChange: (type: FieldType) => void;
 }> = ({ field, onTypeChange }) => {
   return (
-    <select value={field.type} onChange={e => onTypeChange(e.target.value as FieldType)}>
-      {Types.map(type => <option key={type} value={type} >{type}</option>)}
+    <select
+      value={field.type}
+      onChange={(e) => onTypeChange(e.target.value as FieldType)}
+    >
+      {Types.map((type) => (
+        <option key={type} value={type}>
+          {type}
+        </option>
+      ))}
     </select>
   );
-}
+};
 
 const TextFieldInput: VFC<{
   field: TextField;
@@ -78,20 +90,28 @@ const SelectFieldInput: VFC<{
 }> = ({ field, onChange }) => {
   return (
     <>
-    {field.options.map((t, i) =>
-      <input
-        key={i}
-        value={t}
-        onChange={e => onChange({
-          ...field,
-          options: field.options.map((o, j) => i === j ? e.target.value : o)
-        })}
-      />
-    )}
-    <button onClick={() => onChange({ ...field, options: [...field.options, ""] })}>+</button>
+      {field.options.map((t, i) => (
+        <input
+          key={i}
+          value={t}
+          onChange={(e) =>
+            onChange({
+              ...field,
+              options: field.options.map((o, j) =>
+                i === j ? e.target.value : o
+              ),
+            })
+          }
+        />
+      ))}
+      <button
+        onClick={() => onChange({ ...field, options: [...field.options, ""] })}
+      >
+        +
+      </button>
     </>
   );
-}
+};
 
 const FieldInputWrapper: VFC<{
   field: Field;
@@ -99,12 +119,12 @@ const FieldInputWrapper: VFC<{
 }> = (props) => {
   switch (props.field.type) {
     case "select":
-      return <SelectFieldInput {...props as any} />
+      return <SelectFieldInput {...(props as any)} />;
     case "text":
     default:
-      return <TextFieldInput {...props as any} />
+      return <TextFieldInput {...(props as any)} />;
   }
-}
+};
 
 const FieldInput: VFC<{
   field: Field;
@@ -115,38 +135,59 @@ const FieldInput: VFC<{
   return (
     <li>
       <FieldTypeSelector field={field} onTypeChange={onTypeChange} />
-      <input value={field.name} onChange={e => onChange({ ...field, name: e.target.value })} />
-      <FieldInputWrapper field={field} onChange={onChange}/>
+      <input
+        value={field.name}
+        onChange={(e) => onChange({ ...field, name: e.target.value })}
+      />
+      <FieldInputWrapper field={field} onChange={onChange} />
       <button onClick={onRemove}>x</button>
     </li>
   );
+};
+
+interface Props {
+  model: { id: string; name: string; structure: Field[] };
 }
 
-const EditModel: NextPage = () => {
-  const {fields, add, setProps, remove, changeType} = useFields([]);
+const EditModel: NextPage<Props> = ({
+  model: { id, name: initialName, structure: initialFields },
+}) => {
+  const [name, setName] = useState(initialName);
+  const { fields, add, setProps, remove, changeType } = useFields(
+    initialFields
+  );
   const router = useRouter();
 
   async function saveModel() {
-    await Api.withCookie().models.create(fields);
+    await Api.withCookie().models.save(id, name, fields);
     router.push("/models");
   }
 
   return (
     <>
-    <ul>
-      {fields.map((f, i) =>
-        <FieldInput
-          field={f}
-          key={i}
-          onTypeChange={type => changeType(i, type)}
-          onChange={f => (console.log(f),setProps(i, f))}
-          onRemove={() => remove(i)}
-        />)}
-    </ul>
-    <button onClick={add}>add</button>
-    <button onClick={saveModel}>save</button>
+      <input value={name} onChange={e => setName(e.target.value)} />
+      <ul>
+        {fields.map((f, i) => (
+          <FieldInput
+            field={f}
+            key={i}
+            onTypeChange={(type) => changeType(i, type)}
+            onChange={(f) => setProps(i, f)}
+            onRemove={() => remove(i)}
+          />
+        ))}
+      </ul>
+      <button onClick={add}>add</button>
+      <button onClick={saveModel}>save</button>
     </>
   );
-}
+};
+
+EditModel.getInitialProps = async ({ req, query }) => {
+  const { id } = query;
+  return {
+    model: await Api.withCookie(req?.headers.cookie).models.get(id as string),
+  };
+};
 
 export default EditModel;

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { NextPage } from "next";
 import { Form, Input, Submit } from "../../components/Form";
 import { Api } from "../../lib/Api";
-import { useRouter } from "next/dist/client/router";
 
 const Login: NextPage = () => {
   const [id, setId] = useState("");
@@ -27,11 +26,11 @@ Login.getInitialProps = async ({ req, res }) => {
     if (res) {
       res.writeHead(302, { location: "/" }).end();
     } else {
-      location.href = "/"
+      location.href = "/";
     }
   } catch {
     return {};
   }
-}
+};
 
 export default Login;

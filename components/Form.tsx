@@ -1,12 +1,7 @@
-import { css } from "@emotion/react";
 import { ReactNode, VFC } from "react";
 
 export const Form: VFC<{ children: ReactNode }> = ({ children }) => {
-  return (
-    <form>
-      {children}
-    </form>
-  );
+  return <form>{children}</form>;
 };
 
 export const Input: VFC<{
@@ -32,7 +27,10 @@ export const Submit: VFC<{
   label: string;
 }> = ({ onClick, label }) => {
   return (
-    <button style={{ width: 120 }} onClick={e => (e.preventDefault(), onClick())}>
+    <button
+      style={{ width: 120 }}
+      onClick={(e) => (e.preventDefault(), onClick())}
+    >
       {label}
     </button>
   );

@@ -1,9 +1,8 @@
 import { binding, named } from "automated-omusubi";
 import { UUID } from "../domain/Id";
-import { Model, Models, ModelStructure } from "../domain/Model";
+import { Model, Models, ModelStructure, Name } from "../domain/Model";
 import { User } from "../domain/User";
 import { ModelPort } from "../port/ModelPort";
-import { TODO } from "../TODO";
 
 @named
 export class ModelUseCase {
@@ -14,15 +13,15 @@ export class ModelUseCase {
     return this.modelPort.findByOwner(owner);
   }
 
-  store(owner: User, structure: ModelStructure) {
-    return this.modelPort.save(owner, structure);
+  store(owner: User, name: Name, structure: ModelStructure): Promise<Model> {
+    return this.modelPort.save(owner, name, structure);
   }
 
-  get(owner: User, id: UUID): Promise<Model> {
-    return TODO();
+  getOne(owner: User, id: UUID): Promise<Model> {
+    return this.modelPort.findOwnedById(owner, id);
   }
 
-  update(owner: User, structure: ModelStructure): Promise<Model> {
-    return TODO();
+  update(owner: User, model: Model): Promise<Model> {
+    return this.modelPort.update(owner, model);
   }
 }

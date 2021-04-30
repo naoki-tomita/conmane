@@ -30,6 +30,7 @@ model Model {
   id String @id
   ownerId String
   owner User @relation(fields: [ownerId], references: [id])
+  name String
   structure String
 }
 
@@ -37,5 +38,6 @@ model Entity {
   id String @id
   ownerId String
   owner User @relation(fields: [ownerId], references: [id])
+  title String
   content String
 }

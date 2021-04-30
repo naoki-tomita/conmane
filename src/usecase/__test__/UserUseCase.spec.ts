@@ -17,7 +17,9 @@ describe("UserUseCase", () => {
       const userPort = mock<UserPort>();
       register(userPort).as(UserPort);
 
-      when(userPort.create).calledWith(id, password).mockResolvedValueOnce(user);
+      when(userPort.create)
+        .calledWith(id, password)
+        .mockResolvedValueOnce(user);
 
       const target = new UserUseCase();
 
@@ -40,9 +42,13 @@ describe("UserUseCase", () => {
       register(userPort).as(UserPort);
 
       when(userPort.findById).calledWith(id).mockResolvedValueOnce(user);
-      when(sessionPort.create).calledWith(user, period).mockResolvedValueOnce(session);
+      when(periodSpy)
+        .calledWith(new Duration(60 * 60 * 1000))
+        .mockReturnValueOnce(period);
+      when(sessionPort.create)
+        .calledWith(user, period)
+        .mockResolvedValueOnce(session);
       when(user.verifyPassword).calledWith(password).mockReturnValueOnce(true);
-      when(periodSpy).calledWith(new Duration(36000000)).mockReturnValueOnce(period);
 
       const target = new UserUseCase();
 
@@ -54,7 +60,6 @@ describe("UserUseCase", () => {
       const id = mock<LoginId>();
       const password = mock<Password>();
       const user = mock<User>();
-      const session = mock<Session>();
 
       const userPort = mock<UserPort>();
       const sessionPort = mock<SessionPort>();

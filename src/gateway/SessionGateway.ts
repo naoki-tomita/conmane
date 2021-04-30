@@ -26,6 +26,9 @@ export class SessionGateway implements SessionPort {
     const session = await this.prisma.session.findFirst({
       where: { id: id.value ?? "" },
     });
-    return new Session(id, new Period(session!.expiresAt));
+    if (!session) {
+      throw Error("not found");
+    }
+    return new Session(id, new Period(session.expiresAt));
   }
 }
