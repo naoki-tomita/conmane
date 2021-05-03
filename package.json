@@ -43,7 +43,7 @@
     "test": "jest",
     "lint": "prettier \"**/*.{ts,tsx}\" -w && eslint \"**/*.{ts,tsx}\" --fix",
     "build": "next build && prisma migrate deploy",
-    "start": "next start"
+    "start": "echo $PWD && next start"
   },
   "jest": {
     "preset": "ts-jest",
