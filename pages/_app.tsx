@@ -20,6 +20,9 @@ class Application extends App<AppProps> {
   }
 
   static async getInitialProps({ Component, ctx, router }: AppContext) {
+    if (ctx.req?.url === "/500") {
+      return { pageProps: {} };
+    }
     if (ctx.pathname === "/users/login" || ctx.pathname === "/users/create") {
       const pageProps = (await Component.getInitialProps?.(ctx)) ?? {};
       return { pageProps };
