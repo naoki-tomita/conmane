@@ -42,7 +42,9 @@
     "dev": "next dev",
     "test": "jest",
     "lint": "prettier \"**/*.{ts,tsx}\" -w && eslint \"**/*.{ts,tsx}\" --fix",
+    "migrate": "prisma migrate deploy",
     "build": "next build",
+    "prestart": "yarn migrate",
     "start": "next start"
   },
   "jest": {
