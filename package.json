@@ -1,6 +1,6 @@
 {
   "name": "conmane",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
@@ -43,7 +43,7 @@
     "test": "jest",
     "lint": "prettier \"**/*.{ts,tsx}\" -w && eslint \"**/*.{ts,tsx}\" --fix",
     "build": "next build && prisma migrate deploy",
-    "start": "echo $PWD && next start"
+    "start": "node test.js && next start"
   },
   "jest": {
     "preset": "ts-jest",
