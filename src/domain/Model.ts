@@ -9,5 +9,9 @@ export class Name {
   constructor(readonly value: string) {}
 }
 export class Model {
-  constructor(readonly id: UUID, readonly name: Name, readonly structure: ModelStructure) {}
+  constructor(
+    readonly id: UUID,
+    readonly name: Name,
+    readonly structure: ModelStructure
+  ) {}
 }

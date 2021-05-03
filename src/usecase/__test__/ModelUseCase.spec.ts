@@ -33,9 +33,13 @@ describe("ModelUseCase", () => {
       const port = mock<ModelPort>();
       register(port).as(ModelPort);
 
-      when(port.save).calledWith(owner, name, structure).mockResolvedValueOnce(model);
+      when(port.save)
+        .calledWith(owner, name, structure)
+        .mockResolvedValueOnce(model);
 
-      await expect(target.store(owner, name, structure)).resolves.toEqual(model);
+      await expect(target.store(owner, name, structure)).resolves.toEqual(
+        model
+      );
     });
   });
 

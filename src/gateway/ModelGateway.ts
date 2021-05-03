@@ -15,17 +15,22 @@ export class ModelGateway implements ModelPort {
       .findMany({ where: { ownerId: owner.id.value } })
       .then((models) =>
         models.map(
-          (model) => new Model(
-            new UUID(model.id),
-            new Name(model.name),
-            new ModelStructure(model.structure)
-          )
+          (model) =>
+            new Model(
+              new UUID(model.id),
+              new Name(model.name),
+              new ModelStructure(model.structure)
+            )
         )
       )
       .then((models) => new Models(models));
   }
 
-  async save(owner: User, name: Name, structure: ModelStructure): Promise<Model> {
+  async save(
+    owner: User,
+    name: Name,
+    structure: ModelStructure
+  ): Promise<Model> {
     const id = UUID.generate();
     const e = await this.prisma.model.create({
       data: {
@@ -35,7 +40,11 @@ export class ModelGateway implements ModelPort {
         structure: structure.value,
       },
     });
-    return new Model(new UUID(e.id), new Name(e.name), new ModelStructure(e.structure));
+    return new Model(
+      new UUID(e.id),
+      new Name(e.name),
+      new ModelStructure(e.structure)
+    );
   }
 
   findOwnedById(owner: User, id: UUID): Promise<Model> {
@@ -46,14 +55,19 @@ export class ModelGateway implements ModelPort {
           ownerId: owner.id.value,
         },
       })
-      .then(e => {
+      .then((e) => {
         if (e == null) {
-          throw Error("not found")
+          throw Error("not found");
         }
         return e;
       })
       .then(
-        (e) => new Model(new UUID(e.id), new Name(e.name), new ModelStructure(e.structure))
+        (e) =>
+          new Model(
+            new UUID(e.id),
+            new Name(e.name),
+            new ModelStructure(e.structure)
+          )
       );
   }
 
@@ -68,6 +82,13 @@ export class ModelGateway implements ModelPort {
           structure: model.structure.value,
         },
       })
-      .then((e) => new Model(new UUID(e.id), new Name(e.name), new ModelStructure(e.structure)));
+      .then(
+        (e) =>
+          new Model(
+            new UUID(e.id),
+            new Name(e.name),
+            new ModelStructure(e.structure)
+          )
+      );
   }
 }

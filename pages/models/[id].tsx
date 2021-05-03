@@ -165,7 +165,7 @@ const EditModel: NextPage<Props> = ({
 
   return (
     <>
-      <input value={name} onChange={e => setName(e.target.value)} />
+      <input value={name} onChange={(e) => setName(e.target.value)} />
       <ul>
         {fields.map((f, i) => (
           <FieldInput

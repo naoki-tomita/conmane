@@ -14,7 +14,13 @@ type EmptyObject = Record<string, never>;
 interface Model {
   id: string;
   name: string;
-  structure: any;
+  structure: any[];
+}
+
+interface Entry {
+  id: string;
+  title: string;
+  content: any[];
 }
 
 export const Api = {
@@ -47,6 +53,11 @@ export const Api = {
             body: JSON.stringify({ name, structure }),
           });
         },
+      },
+      entries: {
+        list(): Promise<Entry[]> {
+          return request(`${Host}/api/v1/entries`, { headers });
+        }
       },
     };
   },

@@ -73,8 +73,8 @@ describe("ModelGateway", () => {
       const entity = {
         id: "cccccccc-cccc-cccc-cccc-cccccccccccc",
         name: "model1",
-        structure: JSON.stringify({ c: "c" })
-      }
+        structure: JSON.stringify({ c: "c" }),
+      };
       const prisma = {
         model: {
           create: jest.fn(() => Promise.resolve(entity)),
