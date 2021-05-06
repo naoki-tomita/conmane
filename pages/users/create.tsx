@@ -1,7 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { NextPage } from "next";
 import { Api } from "../../lib/Api";
 import { Form, Input, Submit } from "../../components/Form";
+import Link from "next/link";
 
 const Create: NextPage = () => {
   const [id, setId] = useState("");
@@ -14,6 +15,7 @@ const Create: NextPage = () => {
   }
 
   return (
+    <>
     <Form>
       <Input label="id" onChange={setId} value={id} />
       <Input label="password" onChange={setPassword} value={password} />
@@ -24,6 +26,8 @@ const Create: NextPage = () => {
       />
       <Submit label="create" onClick={create} />
     </Form>
+    already have account? <Link href="/users/login"><a>login</a></Link>
+    </>
   );
 };
 
